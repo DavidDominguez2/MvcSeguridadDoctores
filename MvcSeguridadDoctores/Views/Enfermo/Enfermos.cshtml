@@ -1,0 +1,36 @@
+﻿@model List<Enfermo>
+
+
+<h1>Lista de Enfermos</h1>
+
+<table class="table table-dark">
+    <thead>
+        <tr>
+            <th>Inscripcion</th>
+            <th>Apellido</th>
+            <th>Direccion</th>
+            <th>Fecha de Nacimiento</th>
+            <th>Sexo</th>
+            <th>Numero Seguridad Social</th>
+            <th>Eliminar</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (Enfermo enfermo in Model) {
+            <tr>
+                <td>@enfermo.Inscripcion</td>
+                <td>@enfermo.Apellido</td>
+                <td>@enfermo.Direccion</td>
+                <td>@enfermo.FechaNac</td>
+                <td>@enfermo.Sexo</td>
+                <td>@enfermo.NSS</td>
+                <td>
+                    <a asp-action="DeleteEnfermo" asp-controller="Enfermo" asp-route-inscripcion="@enfermo.Inscripcion" class="btn btn-danger">
+                        Eliminar
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+    
+</table>
