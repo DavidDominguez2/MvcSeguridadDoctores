@@ -31,15 +31,22 @@ namespace MvcSeguridadDoctores.Controllers {
                 Claim claimIdDoctor = new Claim(ClaimTypes.NameIdentifier, doctor.DoctorNo.ToString());
                 identity.AddClaim(claimIdDoctor);
 
+                Claim claimRole = new Claim(ClaimTypes.Role, doctor.Especialidad);
+                identity.AddClaim(claimRole);
+
+                if (doctor.DoctorNo == 982) {
+                    identity.AddClaim(new Claim("Administrador", "Soy el admin"));
+                }
+
                 ClaimsPrincipal userPrincipal = new ClaimsPrincipal(identity);
 
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, userPrincipal);
 
                 string controller = TempData["controller"].ToString();
-
                 string action = TempData["action"].ToString();
+                string id = TempData["inscripcion"].ToString();
 
-                return RedirectToAction(action, controller);
+                return RedirectToAction(action, controller, new { inscripcion = id });
             } else {
                 ViewData["MENSAJE"] = "Usuario/Password incorrectas";
                 return View();
@@ -53,7 +60,7 @@ namespace MvcSeguridadDoctores.Controllers {
         public async Task<IActionResult> LogOut() {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Enfermos", "Enfermo");
         }
     }
 }

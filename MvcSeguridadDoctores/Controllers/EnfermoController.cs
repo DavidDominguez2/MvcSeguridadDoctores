@@ -17,14 +17,16 @@ namespace MvcSeguridadDoctores.Controllers {
             return View(enfermos);
         }
 
-        [AuthorizeHospital]
-        public async Task<IActionResult> DeleteEnfermo() {
+        [AuthorizeHospital(Policy = "PERMISOSELEVADOS")]
+        public async Task<IActionResult> DeleteEnfermo(int id) {
             return View();
         }
 
+        [AuthorizeHospital]
         [HttpPost]
-        public async Task<IActionResult> DeleteEnfermo(int inscripcion) {
-            await this.repo.DeleteEnfermoAsync(inscripcion);
+        [ActionName("DeleteEnfermo")]
+        public async Task<IActionResult> DeleteEnfermoPost(int id) {
+            await this.repo.DeleteEnfermoAsync(id);
             return RedirectToAction("Enfermos");
         }
 

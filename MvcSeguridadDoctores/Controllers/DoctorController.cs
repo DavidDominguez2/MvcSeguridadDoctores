@@ -12,6 +12,11 @@ namespace MvcSeguridadDoctores.Controllers {
             this.repo = repo;
         }
 
+        [AuthorizeHospital(Policy = "AdminOnly")]
+        public IActionResult AdminDoctores() {
+            return View();
+        }
+
         [AuthorizeHospital]
         public async Task<IActionResult> PerfilDoctor() {
             string apellido = HttpContext.User.Identity.Name;

@@ -9,13 +9,23 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession();
 
+builder.Services.AddAuthorization(options => {
+    options.AddPolicy("PERMISOSELEVADOS", policy => policy.RequireRole("PSIQUIATRIA", "CARDIOLOGIA"));
+    options.AddPolicy("AdminOnly", policy => policy.RequireClaim("Administrador"));
+});
+
 // Add services to the container.
 
 builder.Services.AddAuthentication(options => {
     options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
     options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-}).AddCookie();
+}).AddCookie(
+    CookieAuthenticationDefaults.AuthenticationScheme,
+    config => {
+        config.AccessDeniedPath = "/Managed/ErrorAcceso";
+    }
+);
 
 string connectionString = builder.Configuration.GetConnectionString("SqlHospital");
 
@@ -47,9 +57,12 @@ app.UseSession();
 
 app.UseMvc(routes => {
     routes.MapRoute(
+        name: "deleteEnfermo",
+        template: "{controller=Enfermos}/{action=DeleteEnfermo}/{inscripcion?}"
+    );
+    routes.MapRoute(
         name: "default",
-        template: "{controller=Enfermo}/{action=Enfermos}/{id?}"
-        );
+        template: "{controller=Home}/{action=Index}/{id?}");
 });
 
 app.Run();
